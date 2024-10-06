@@ -1,0 +1,167 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="comp229---week-4-lab-expanding-the-event-viewer-api"><strong>COMP229 - Week 4 Lab: Expanding the Event Viewer API</strong></h1>
+<h2 id="objective"><strong>Objective:</strong></h2>
+<p>In this lab, you will expand the Event Viewer API from Week 3 by adding POST, PUT, and DELETE routes. Additionally, you will learn about soft delete versus hard delete and why it is generally preferred.</p>
+<h2 id="required-packages"><strong>Required Packages:</strong></h2>
+<ul>
+<li><code>express</code></li>
+<li><code>mongodb</code></li>
+<li><code>dotenv</code></li>
+</ul>
+<h2 id="instructions"><strong>Instructions:</strong></h2>
+<h3 id="environment-setup"><strong>1. Environment Setup:</strong></h3>
+<ul>
+<li>Use your existing Week 3 project or create a new Node.js project.</li>
+<li>Create an <code>app.js</code> file where you will write your server code.</li>
+<li>Install the necessary packages:<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">npm</span> <span class="token function">install</span> express mongodb dotenv
+</code></pre>
+</li>
+<li>Set up a <code>.env</code> file to store your MongoDB connection string and use <code>dotenv</code> to load environment variables.</li>
+</ul>
+<h3 id="create-mongodb-database"><strong>2. Create MongoDB Database:</strong></h3>
+<ul>
+<li>Ensure you have a <code>concerts</code> collection in your MongoDB database, including fields like <code>Event Name</code>, <code>Venue</code>, <code>Date</code>, and <code>deleted</code>.</li>
+</ul>
+<h3 id="implement-new-routes"><strong>3. Implement New Routes:</strong></h3>
+<h4 id="route-1-add-new-concert-post"><strong>Route 1: Add New Concert (POST)</strong></h4>
+<ul>
+<li><strong>Endpoint:</strong> <code>POST /concerts</code></li>
+<li><strong>Functionality:</strong>
+<ul>
+<li>Adds a new concert to the database.</li>
+</ul>
+</li>
+</ul>
+<h4 id="route-2-update-concert-details-put"><strong>Route 2: Update Concert Details (PUT)</strong></h4>
+<ul>
+<li><strong>Endpoint:</strong> <code>PUT /concerts/:id</code></li>
+<li><strong>Functionality:</strong>
+<ul>
+<li>Updates specific details of an existing concert using its ID.</li>
+</ul>
+</li>
+</ul>
+<h4 id="route-3-soft-delete-concert-delete"><strong>Route 3: Soft Delete Concert (DELETE)</strong></h4>
+<ul>
+<li><strong>Endpoint:</strong> <code>DELETE /concerts/:id</code></li>
+<li><strong>Functionality:</strong>
+<ul>
+<li>Marks the concert as deleted by setting a <code>deleted</code> flag to <code>true</code> instead of removing it from the database.</li>
+<li>Update the GET routes to exclude concerts marked as deleted.</li>
+</ul>
+</li>
+</ul>
+<h4 id="soft-delete-vs.-hard-delete-explanation"><strong>Soft Delete vs. Hard Delete Explanation:</strong></h4>
+<ul>
+<li><strong>Soft Delete:</strong>
+<ul>
+<li>Marks a record as deleted (e.g., using a <code>deleted: true</code> flag) instead of physically removing it from the database.</li>
+<li><strong>Benefits:</strong>
+<ul>
+<li><strong>Data Recovery:</strong> Allows for easy recovery of accidentally deleted records.</li>
+<li><strong>Audit Trail:</strong> Keeps a record of all actions, aiding in compliance and debugging.</li>
+<li><strong>Integrity:</strong> Prevents breaking relationships between data and avoids orphaned records.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Hard Delete:</strong>
+<ul>
+<li>Physically removes the record from the database.</li>
+<li><strong>Drawbacks:</strong>
+<ul>
+<li>Lost data cannot be recovered easily.</li>
+<li>Can break dependencies and cause errors in related systems.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Lab Task:</strong> Implement the DELETE route as a soft delete and update all GET routes to exclude deleted concerts.</li>
+</ul>
+<h3 id="update-get-routes"><strong>4. Update GET Routes:</strong></h3>
+<ul>
+<li>Modify the existing GET routes to filter out concerts marked with <code>deleted: true</code>.</li>
+</ul>
+<h3 id="bonus-error-handling-scenarios"><strong>Bonus: Error Handling Scenarios</strong></h3>
+<ul>
+<li>Implement error handling in your routes to improve robustness. Below are common error scenarios and what to return:</li>
+</ul>
+<h4 id="error-scenarios-and-responses"><strong>Error Scenarios and Responses:</strong></h4>
+<ul>
+<li>
+<p><strong>POST /concerts:</strong></p>
+<ul>
+<li><strong>Missing Fields:</strong>
+<ul>
+<li><strong>Status Code:</strong> <code>400 Bad Request</code></li>
+<li><strong>Response:</strong> <code>{ "error": "Missing required fields: Event Name, Venue, and Date are required." }</code></li>
+</ul>
+</li>
+<li><strong>Invalid Date Format:</strong>
+<ul>
+<li><strong>Status Code:</strong> <code>400 Bad Request</code></li>
+<li><strong>Response:</strong> <code>{ "error": "Invalid date format. Please use YYYY-MM-DD." }</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>PUT /concerts/🆔</strong></p>
+<ul>
+<li><strong>Invalid ID:</strong>
+<ul>
+<li><strong>Status Code:</strong> <code>400 Bad Request</code></li>
+<li><strong>Response:</strong> <code>{ "error": "Invalid concert ID format." }</code></li>
+</ul>
+</li>
+<li><strong>Concert Not Found:</strong>
+<ul>
+<li><strong>Status Code:</strong> <code>404 Not Found</code></li>
+<li><strong>Response:</strong> <code>{ "error": "Concert not found or already marked as deleted." }</code></li>
+</ul>
+</li>
+<li><strong>Invalid Date Format:</strong>
+<ul>
+<li><strong>Status Code:</strong> <code>400 Bad Request</code></li>
+<li><strong>Response:</strong> <code>{ "error": "Invalid date format. Please use YYYY-MM-DD." }</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>DELETE /concerts/🆔</strong></p>
+<ul>
+<li><strong>Invalid ID:</strong>
+<ul>
+<li><strong>Status Code:</strong> <code>400 Bad Request</code></li>
+<li><strong>Response:</strong> <code>{ "error": "Invalid concert ID format." }</code></li>
+</ul>
+</li>
+<li><strong>Concert Not Found or Already Deleted:</strong>
+<ul>
+<li><strong>Status Code:</strong> <code>404 Not Found</code></li>
+<li><strong>Response:</strong> <code>{ "error": "Concert not found or already marked as deleted." }</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="submission"><strong>Submission:</strong></h3>
+<ul>
+<li>Test your routes using Postman or another API client.</li>
+<li>If you finish early, test various scenarios, including error cases, to ensure your implementation is robust.</li>
+</ul>
+</div>
+</body>
+
+</html>
